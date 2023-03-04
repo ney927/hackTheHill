@@ -1,7 +1,0 @@
-{
-    "user":"String",
-    "event":{
-        "description":"String",
-        "time":"Int"
-    }
-}
