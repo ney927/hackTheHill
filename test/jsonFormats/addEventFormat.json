@@ -1,11 +1,7 @@
 {
-    "users": [],
-    "eventname":"",
-    "description":"",
-    
-    "dueDateDay":0,
-    "dueDateMonth":0,
-    "dueDateYear":0,
-    "dueDateHour":0,
-    "dueDateMinute":0
+    "user":"String",
+    "event":{
+        "description":"String",
+        "time":"Int"
+    }
 }
