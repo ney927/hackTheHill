@@ -23,7 +23,6 @@ function submit_pressed(){
 		}
 
 	}
-
     req.open("POST", `/api/login`);
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(un_and_pw));
@@ -44,7 +43,7 @@ function signup_pressed(){
 		if(this.readyState==4 && this.status==200){
 
 			alert("user has been added" );
-            console.log(req.responseText);
+            //console.log(req.responseText);
 			
 		}else{
 			//console.log(res.body);
@@ -56,6 +55,5 @@ function signup_pressed(){
     req.open("POST", `/api/addUser`);
 	req.setRequestHeader("Content-Type", "application/json");
 	console.log(JSON.stringify(body));
-	req.send(JSON.stringify(body));
-	
+	//req.send(JSON.stringify(body));
 }
