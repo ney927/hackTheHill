@@ -8,11 +8,8 @@ const bcrypt = require("bcrypt");
 const Joi = require("joi");
 
 const createUserSchema = Joi.object({
-  userName: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(8).required(),
-  userName: Joi.string().required(),
-  password: Joi.string().min(8).required(),
+  user: Joi.string().required(),
+  password: Joi.string().required(),
 });
 
 const createEventSchema = Joi.object({
@@ -144,10 +141,10 @@ app.post("/api/addEvent", (req, res) => {
 
   app.post('/api/addUser', (req, res) => {
     
-        console.log("Add user")
-        console.log(req.body)
-    
-        console.log(dataBase);
+      console.log("Add user")
+      console.log(req.body)
+  
+      console.log(dataBase);
 
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
@@ -158,7 +155,7 @@ app.post("/api/addEvent", (req, res) => {
     
     if (dataBase[req.body.user]) {
       console.log("contains user");
-      return res.status(409).send("Username taken");
+      return res.send("Username taken");
     } else {
       console.log("does not contain user: "+req.body.user);
 
@@ -206,4 +203,6 @@ app.post("/api/addEvent", (req, res) => {
     res.sendFile(htmlFilePath); // Send the HTML file
   });
 
-  console.log(`Server listening at http://localhost:${port}`)
+  app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`);
+})
