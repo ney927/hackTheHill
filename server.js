@@ -89,7 +89,6 @@ app.post('/api/addMessage', (req, res) => {
 app.post('/api/addEvent', (req, res) => {
 
     console.log("Add event\n" +  req.body.toString())
-    console.log(dataBase)
 
     const { error, value: { user, title, description, date } = {} } = createEventSchema.validate(req.body);
     if (error) {
@@ -117,6 +116,9 @@ app.post('/api/addEvent', (req, res) => {
 
 
 app.post('/api/addUser', (req, res) => {
+
+    console.log("Add user\n" +  req.body.toString())
+
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
