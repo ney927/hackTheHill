@@ -165,11 +165,11 @@ app.post('/api/addUser', (req, res) => {
 
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
-        return res.status(400).send(error.details[0].message);
+        res.status(400).send(error.details[0].message);
     }
 
     if (dataBase[user]) {
-        return res.status(409).send("Username taken");
+        res.status(409).send("Username taken");
     }
 
     // User is available, add to the database
