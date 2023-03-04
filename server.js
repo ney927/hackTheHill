@@ -163,30 +163,46 @@ app.post('/api/addUser', (req, res) => {
     console.log("Add user")
     console.log(req.body)
 
-    const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-    }
-
-    if (dataBase[user]) {
+    console.log(dataBase);
+    console.log(req.body.user);
+    if(dataBase[req.body.user]){
+        console.log("contains user");
         res.status(409).send("Username taken");
+
+    }else{
+        console.log("does not contain user");
+
+        // User is available, add to the database
+        dataBase[req.body.user] = {
+            messages: [],
+            events: [],
+            password: req.body.password
+        };
+
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
+         res.send(true);
     }
 
-    // User is available, add to the database
-    dataBase[user] = {
-        messages: [],
-        events: [],
-        password: password,
-    };
+    // const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
+    // if (error) {
+    //     res.status(400).send(error.details[0].message);
+    // }
 
-    fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+    // if (dataBase[user]) {
+    //     res.status(409).send("Username taken");
+    // }
 
-    return res.send(true);
+    
+
+    
 });
 
 app.post('/api/getData', (req, res) => {
     console.log("Get Data")
     console.log(req.body)
+
+
 
     const { error, value: { user } = {} } = getD.validate(req.body);
     if (error) {

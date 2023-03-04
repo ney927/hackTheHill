@@ -40,15 +40,18 @@ function signup_pressed(){
 		if(this.readyState==4 && this.status==200){
 
 			alert("user has been added" );
-            console.log(res.body);
+            console.log(req.responseText);
 			
 		}else{
-			console.log(res.body);
+			//console.log(res.body);
 			console.log("user not added");
+			alert("sorry the user name has been taken ");
 		}
 	}
 
     req.open("POST", `/api/addUser`);
 	req.setRequestHeader("Content-Type", "application/json");
+	console.log(JSON.stringify(un_and_pw));
 	req.send(JSON.stringify(un_and_pw));
+	
 }
