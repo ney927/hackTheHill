@@ -11,8 +11,8 @@ const createUserSchema = Joi.object({
   userName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
-    userName: Joi.string().required(),
-    password: Joi.string().min(8).required(),
+  userName: Joi.string().required(),
+  password: Joi.string().min(8).required(),
 });
 
 const createEventSchema = Joi.object({
@@ -78,10 +78,13 @@ app.post("/api/login", (req, res) => {
 
     // add to the database
     if (hashedPassword === dataBase[user].password) {
-      return res.status(200).send(true)
+      return res.send(true)
     } else {
-    return res.status(409).send("Incorrect password");
+      return res.status(409).send("Incorrect password");
     }
+  }
+  else {
+    return res.status(409).send("User not found");
   }
 });
 
@@ -150,30 +153,30 @@ app.post("/api/addUser", (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
-app.post('/api/addUser', (req, res) => {
+  app.post('/api/addUser', (req, res) => {
 
     console.log("Add user")
     console.log(req.body)
 
     console.log(dataBase);
     console.log(req.body.user);
-    if(dataBase[req.body.user]){
-        console.log("contains user");
-        res.status(409).send("Username taken");
+    if (dataBase[req.body.user]) {
+      console.log("contains user");
+      res.status(409).send("Username taken");
 
-    }else{
-        console.log("does not contain user");
+    } else {
+      console.log("does not contain user");
 
-        // User is available, add to the database
-        dataBase[req.body.user] = {
-            messages: [],
-            events: [],
-            password: req.body.password
-        };
+      // User is available, add to the database
+      dataBase[req.body.user] = {
+        messages: [],
+        events: [],
+        password: req.body.password
+      };
 
-        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+      fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-         res.send(true);
+      res.send(true);
     }
 
     // const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
@@ -185,45 +188,45 @@ app.post('/api/addUser', (req, res) => {
     //     res.status(409).send("Username taken");
     // }
 
-    
 
-    
-});
 
-app.post('/api/getData', (req, res) => {
+
+  });
+
+  app.post('/api/getData', (req, res) => {
     console.log("Get Data")
     console.log(req.body)
 
 
 
-  const { error, value: { user } = {} } = getD.validate(req.body);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
+    const { error, value: { user } = {} } = getD.validate(req.body);
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
 
-  if (dataBase[user]) {
-    const userData = dataBase[user]; // Get the user data from the database
-    return res.json(userData); // Send the user data as a JSON response
-  } else {
-    return res.status(409).send("User not found");
-  }
-});
+    if (dataBase[user]) {
+      const userData = dataBase[user]; // Get the user data from the database
+      return res.json(userData); // Send the user data as a JSON response
+    } else {
+      return res.status(409).send("User not found");
+    }
+  });
 
-app.get("*", function (req, res) {
-  let requestedPath = req.path; // Get the requested path from the request object
-  console.log(requestedPath);
+  app.get("*", function (req, res) {
+    let requestedPath = req.path; // Get the requested path from the request object
+    console.log(requestedPath);
 
-  if (requestedPath === "/") {
-    requestedPath = "/sign-in.html";
-  }
+    if (requestedPath === "/") {
+      requestedPath = "/sign-in.html";
+    }
 
-  const htmlFilePath = __dirname + "/pages" + requestedPath; // Construct the file path to the HTML file
+    const htmlFilePath = __dirname + "/pages" + requestedPath; // Construct the file path to the HTML file
 
-  console.log(htmlFilePath);
+    console.log(htmlFilePath);
 
-  res.sendFile(htmlFilePath); // Send the HTML file
-});
+    res.sendFile(htmlFilePath); // Send the HTML file
+  });
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
-});
+  app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`);
+  });
