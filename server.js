@@ -179,18 +179,14 @@ app.post("/api/addUser", (req, res) => {
       res.send(true);
     }
 
-    // const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
-    // if (error) {
-    //     res.status(400).send(error.details[0].message);
-    // }
+     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
+     if (error) {
+         res.status(400).send(error.details[0].message);
+     }
 
-    // if (dataBase[user]) {
-    //     res.status(409).send("Username taken");
-    // }
-
-
-
-
+     if (dataBase[user]) {
+         res.status(409).send("Username taken");
+     }
   });
 
   app.post('/api/getData', (req, res) => {
@@ -227,6 +223,4 @@ app.post("/api/addUser", (req, res) => {
     res.sendFile(htmlFilePath); // Send the HTML file
   });
 
-  app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
-  });
