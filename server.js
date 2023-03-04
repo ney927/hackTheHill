@@ -23,6 +23,11 @@ const createEventSchema = Joi.object({
     date: Joi.string().required(),
 });
 
+const loginSchema = Joi.object({
+    user: Joi.string().required(),
+    password: Joi.string().required(),
+});
+
 const createMessageSchema = Joi.object({
     user: Joi.string().required(),
     from: Joi.string().required(),
@@ -53,6 +58,32 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
     } catch (e) {
         console.error(`Failed to parse JSON: ${e}`);
     }
+});
+
+
+
+app.post('/api/login', (req, res) => {
+    console.log("Login ");
+    console.log(req.body)
+
+    const { error, value: { user, password } = {} } = loginSchema.validate(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
+
+    if (dataBase[user]) {
+
+        // add to the database
+        if( hash(password) === dataBase[user].password){
+            return res.send(true)
+        }else{
+            return res.send(false)
+        }
+    }
+    else {
+        return res.status(409).send(false);
+    }
+
 });
 
 
