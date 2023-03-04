@@ -78,27 +78,10 @@ app.post("/api/login", (req, res) => {
 
     // add to the database
     if (hashedPassword === dataBase[user].password) {
-      return res.send(true);
+      return res.status(200).send(true)
     } else {
-      return res.send(false);
-    if (dataBase[user]!==undefined) {
-
-        const saltRounds = 10;
-        const salt = bcrypt.genSaltSync(saltRounds);
-        
-        // Hash the password with the salt
-        const hashedPassword = bcrypt.hashSync(password, salt)
-
-        
-        // add to the database
-        if( hashedPassword === dataBase[user].password){
-            return res.send(true)
-        }else{
-            return res.send(false)
-        }
+    return res.status(409).send("Incorrect password");
     }
-  } else {
-    return res.status(409).send(false);
   }
 });
 
