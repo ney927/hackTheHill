@@ -142,12 +142,15 @@ app.post("/api/addEvent", (req, res) => {
     
     console.log(req.body)
 
+    //checking that input matches expected json
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
     }
     
+    //is the user in the database?
     if (dataBase[req.body.user]) {
+      //already exists, name taken
       return res.send(false);    
     } else {
 
@@ -158,8 +161,10 @@ app.post("/api/addEvent", (req, res) => {
         password: req.body.password
       };
 
+      //update database file
       fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
+      //return true since it succeeded
       return res.send(true)
     }
 
