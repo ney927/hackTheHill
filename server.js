@@ -69,7 +69,7 @@ app.post('/api/login', (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
 
-    if (dataBase[user]) {
+    if (dataBase[user]!==undefined) {
 
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
@@ -164,11 +164,11 @@ app.post('/api/addUser', (req, res) => {
 
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
-        res.status(400).send(error.details[0].message);
+        return  res.status(400).send(error.details[0].message);
     }
 
-    if (dataBase[user]) {
-        res.status(409).send("Username taken");
+    if (dataBase[user]!==undefined) {
+        return res.status(409).send("Username taken");
     }
 
     // User is available, add to the database
