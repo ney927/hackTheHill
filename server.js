@@ -5,7 +5,7 @@ const port = 3000;
 app.use(express.json());
 
 const fs = require('fs')
-
+const bcrypt = require('bcrypt');
 const Joi = require('joi');
 
 
@@ -61,7 +61,6 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 });
 
 
-
 app.post('/api/login', (req, res) => {
     console.log("Login ");
     console.log(req.body)
@@ -73,8 +72,16 @@ app.post('/api/login', (req, res) => {
 
     if (dataBase[user]) {
 
+        const saltRounds = 10;
+        const salt = bcrypt.genSaltSync(saltRounds);
+        
+        // Hash the password with the salt
+        const hashedPassword = bcrypt.hashSync(password, salt)
+
+        console.log(bcrypt.hashSync("password123", salt))
+
         // add to the database
-        if( hash(password) === dataBase[user].password){
+        if( hashedPassword === dataBase[user].password){
             return res.send(true)
         }else{
             return res.send(false)
@@ -163,7 +170,7 @@ app.post('/api/addUser', (req, res) => {
     }
 
     if (dataBase[user]) {
-        return res.status(409).send('Username taken');
+        return res.status(409).send("Username taken");
     }
 
     // User is available, add to the database
@@ -175,7 +182,7 @@ app.post('/api/addUser', (req, res) => {
 
     fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-    return res.send('User added successfully');
+    return res.send(true);
 });
 
 app.post('/api/getData', (req, res) => {
