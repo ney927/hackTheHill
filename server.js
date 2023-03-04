@@ -49,7 +49,8 @@ fs.readFile(dataPath, "utf8", (err, data) => {
   try {
     const jsonData = JSON.parse(data);
     dataBase = jsonData;
-    console.log(jsonData);
+    //console.log(jsonData);
+    console.log("Loaded database\n");
   } catch (e) {
     console.error(`Failed to parse JSON: ${e}`);
   }
@@ -59,6 +60,7 @@ app.post("/api/login", (req, res) => {
   console.log("Login ");
   console.log(req.body);
 
+  //checking input matches expected json
   const { error, value: { user, password } = {} } = loginSchema.validate(
     req.body
   );
@@ -67,11 +69,14 @@ app.post("/api/login", (req, res) => {
   }
 
   if (dataBase[user]) {
+    
+    //hashing password
     //const saltRounds = 10;
     //const salt = bcrypt.genSaltSync(saltRounds);
 
     // Hash the password with the salt
     //const hashedPassword = bcrypt.hashSync(password, salt);
+
 
     // add to the database
     if (password === dataBase[user].password) {
@@ -88,6 +93,7 @@ app.post("/api/addMessage", (req, res) => {
   console.log("Add message");
   console.log(req.body);
 
+  //check input matches expected json
   const { error, value: { user, from, app, title, content, date } = {} } =
     createMessageSchema.validate(req.body);
   if (error) {
@@ -104,11 +110,12 @@ app.post("/api/addMessage", (req, res) => {
       date: date,
     });
 
+    //update database file
     fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-    return res.send("Event added successfully");
+    return res.send(true);
   } else {
-    return res.status(409).send("User does not exist");
+    return res.send(false);
   }
 });
 
@@ -116,25 +123,29 @@ app.post("/api/addEvent", (req, res) => {
   console.log("Add event");
   console.log(req.body);
 
+  //checking that input matches expected json
   const { error, value: { user, title, description, date } = {} } =
     createEventSchema.validate(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
 
+  //if user is in database
   if (dataBase[user]) {
-    // add to the database
+    
+    //append event to user's event array
     dataBase[user].messages.push({
       title: title,
       description: description,
       date: date,
     });
 
+    //update database file
     fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-    return res.send("Event added successfully");
+    return res.send(true);
   } else {
-    return res.status(409).send("User does not exist");
+    return res.send(false);
   }
 });
 
