@@ -78,8 +78,7 @@ app.post('/api/login', (req, res) => {
         // Hash the password with the salt
         const hashedPassword = bcrypt.hashSync(password, salt)
 
-        console.log(bcrypt.hashSync("password123", salt))
-
+        
         // add to the database
         if( hashedPassword === dataBase[user].password){
             return res.send(true)
