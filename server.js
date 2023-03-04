@@ -11,6 +11,8 @@ const createUserSchema = Joi.object({
   userName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
+    userName: Joi.string().required(),
+    password: Joi.string().min(8).required(),
 });
 
 const createEventSchema = Joi.object({
@@ -79,6 +81,21 @@ app.post("/api/login", (req, res) => {
       return res.send(true);
     } else {
       return res.send(false);
+    if (dataBase[user]!==undefined) {
+
+        const saltRounds = 10;
+        const salt = bcrypt.genSaltSync(saltRounds);
+        
+        // Hash the password with the salt
+        const hashedPassword = bcrypt.hashSync(password, salt)
+
+        
+        // add to the database
+        if( hashedPassword === dataBase[user].password){
+            return res.send(true)
+        }else{
+            return res.send(false)
+        }
     }
   } else {
     return res.status(409).send(false);
@@ -150,9 +167,22 @@ app.post("/api/addUser", (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
+app.post('/api/addUser', (req, res) => {
+
+    console.log("Add user")
+    console.log(req.body)
+
+    const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
+    if (error) {
+        return  res.status(400).send(error.details[0].message);
+    }
+
   if (dataBase[user]) {
     return res.status(409).send("Username taken");
   }
+    if (dataBase[user]!==undefined) {
+        return res.status(409).send("Username taken");
+    }
 
   // User is available, add to the database
   dataBase[user] = {
