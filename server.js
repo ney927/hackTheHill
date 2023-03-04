@@ -23,6 +23,11 @@ const createEventSchema = Joi.object({
     date: Joi.string().required(),
 });
 
+const loginSchema = Joi.object({
+    user: Joi.string().required(),
+    password: Joi.string().required(),
+});
+
 const createMessageSchema = Joi.object({
     user: Joi.string().required(),
     from: Joi.string().required(),
@@ -53,6 +58,39 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
     } catch (e) {
         console.error(`Failed to parse JSON: ${e}`);
     }
+});
+
+
+
+app.post('/api/login', (req, res) => {
+    console.log("Login ");
+    console.log(req.body)
+
+    const { error, value: { user, from, app, title, content, date } = {} } = createMessageSchema.validate(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
+
+    if (dataBase[user]) {
+
+        // add to the database
+        dataBase[user].events.push({
+            from: from,
+            app: app,
+            title: title,
+            content: content,
+            date: date,
+        })
+
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
+        return res.send('Event added successfully');
+
+    }
+    else {
+        return res.status(409).send('User does not exist');
+    }
+
 });
 
 
