@@ -57,7 +57,8 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 
 
 app.post('/api/addMessage', (req, res) => {
-    console.log("Add message\n" + req.body.toString())
+    console.log("Add message");
+    console.log(req.body)
 
 
     const { error, value: { user, from, app, title, content, date } = {} } = createMessageSchema.validate(req.body);
@@ -88,7 +89,8 @@ app.post('/api/addMessage', (req, res) => {
 
 app.post('/api/addEvent', (req, res) => {
 
-    console.log("Add event\n" +  req.body.toString())
+    console.log("Add event") 
+    console.log(req.body)
 
     const { error, value: { user, title, description, date } = {} } = createEventSchema.validate(req.body);
     if (error) {
@@ -117,7 +119,8 @@ app.post('/api/addEvent', (req, res) => {
 
 app.post('/api/addUser', (req, res) => {
 
-    console.log("Add user\n" +  req.body.toString())
+    console.log("Add user")
+    console.log(req.body)
 
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
@@ -139,6 +142,9 @@ app.post('/api/addUser', (req, res) => {
 });
 
 app.post('/api/getData', (req, res) => {
+    console.log("Get Data")
+    console.log(req.body)
+
     const { error, value: { user } = {} } = getD.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
