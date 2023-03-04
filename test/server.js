@@ -1,61 +1,47 @@
-/*
-TUTORIAL 03 DEMO CODE:
-
-Here we are prepared to receive a POST message from the client,
-and acknowledge that with a very limited response back to the client
-
-Use browser to view pages at http://localhost:3000/index.html
-
-When the blue cube is moved with the arrow keys, a POST message will be
-sent to the server when the arrow key is released. The POST message will
-contain a data string which is the location of the blue cube when the
-arrow key was released. The server sends back a JSON string which the client should use
-to put down a "waypoint" for where the arrow key was released
-
-Also if the client types in the app text field and presses the "Submit Request" button
-a JSON object containing the text field text will be send to this
-server in a POST message.
-
-Notice in this code we attach an event listener to the request object
-to receive data that might come in in chunks. When the request end event
-is posted we look and see if it is a POST message and if so extract the
-data and process it.
-
-*/
-
-//Cntl+C to stop server (in command line terminal)
 
 
 //Server Code --USING ONLY NODE.JS BUILT IN MODULES
 const http = require('http') //need to http
 const fs = require('fs') //need to read static files
 const url = require('url') //to parse url strings
+const { exit } = require('process')
+
+dataPath = "data.json"
+
 
 const ROOT_DIR = 'html' //dir to serve static files from
 
-const MIME_TYPES = {
-  'css': 'text/css',
-  'gif': 'image/gif',
-  'htm': 'text/html',
-  'html': 'text/html',
-  'ico': 'image/x-icon',
-  'jpeg': 'image/jpeg',
-  'jpg': 'image/jpeg',
-  'js': 'application/javascript', 
-  'json': 'application/json',
-  'png': 'image/png',
-  'svg': 'image/svg+xml',
-  'txt': 'text/plain'
-}
 
-function get_mime(filename) {
-  for (let ext in MIME_TYPES) {
-    if (filename.indexOf(ext, filename.length - ext.length) !== -1) {
-      return MIME_TYPES[ext]
+console.log('Finding database\n')
+
+fs.exists(songFile, (exists) => {
+  if(exists){
+    console.log(songFile + '<--EXISTS')
+    //Found the song file
+    fs.readFile(songFile, function(err, data) {
+      //Read song data file and send lines and chords to client
+      if (err) {
+
+        console.log('Failed to load database\n')
+
+        exit;
+
+      } else {
+        
+console.log('Loading Data\n')
+        var dataBase =  JSON.parse(dataPath)
+        console.log('Successfully Loaded Data\n')
+
+      }
     }
+    )
   }
-  return MIME_TYPES['txt']
 }
+)
+
+
+
+
 
 http.createServer(function(request, response) {
   let urlObj = url.parse(request.url, true, false)
@@ -74,7 +60,6 @@ http.createServer(function(request, response) {
   let dataObj = undefined //object representing the client data
   let returnObj = {} //object to be returned to client
 
-
   //event handler for the end of the message
   request.on('end', function() {
     console.log('received data: ', receivedData)
@@ -87,12 +72,20 @@ http.createServer(function(request, response) {
       console.log("received data object: ", dataObj)
       console.log("type: ", typeof dataObj)
       console.log("USER REQUEST: " + dataObj.text)
-      returnObj.text = "NOT FOUND: " + dataObj.text
+      returnObj.text = "METHOD NOT FOUND: " + dataObj.text
     }
 
 
-    if (request.method === "POST" && urlObj.pathname === "/userText") {
-    //a POST request to fetch a song
+    if (request.method === "POST" && urlObj.pathname === "/addUser") {
+
+    }
+    if (request.method === "POST" && urlObj.pathname === "/addEvent") {
+      
+    }
+    
+
+    
+      //a POST request to fetch a song
     //look for song file in songs directory based on song title
     let songFile = `songs/${dataObj.text.trim()}.txt`
     console.log(`Looking for song file: ${songFile}`)
