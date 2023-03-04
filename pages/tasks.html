@@ -29,7 +29,7 @@
 
     <h1 id="title">Tasks</h1>
     <div id="all-mssgs">
-        <div class="mssg">
+        <!-- <div class="mssg">
             <p class="header">Event Title</p>
             <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
         </div>
@@ -56,11 +56,73 @@
         <div class="mssg">
             <p class="header">Event Title</p>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque nesciunt nostrum ratione, soluta quia sapiente. Distinctio error, ut sequi inventore laborum illum provident, reprehenderit harum in blanditiis optio, eligendi ducimus.</p>
-        </div>
+        </div> -->
     </div>
 </body>
 
 <script>
+
+// task info: 
+//     title: Joi.string().required(),
+//     description: Joi.string().required(),
+//     date: Joi.string().required(),
+
+
+
+
+// messages sample:
+
+messages = [
+    {
+        from: "testdata",
+        app: "testdata",
+        title: "testdata",
+        content: "testdata content",
+        date: "01/01/2020"
+    },
+    {
+        from: "testdata1",
+        app: "testdata1",
+        title: "testdata1",
+        content: "testdata1 content",
+        date: "01/01/2021"
+    },
+    {
+        from: "testdata2",
+        app: "testdata2",
+        title: "testdata2",
+        content: "testdata2 content",
+        date: "01/01/2022"
+    },
+    {
+        from: "testdata3",
+        app: "testdata3",
+        title: "testdata3",
+        content: "testdata3  content",
+        date: "01/01/2023"
+    },
+
+];
+
+//replace the sample data with the data from the database
+for (let i = 0; i < messages.length; i++) {
+    const element = messages[i];
+    let mssg = document.createElement("div");
+    mssg.className = "mssg";
+    let header = document.createElement("p");
+    header.className = "header";
+    header.innerHTML = element.title;
+    let content = document.createElement("p");
+    content.className = "content";
+    content.innerHTML = element.content;
+    let date = document.createElement("p");
+    date.className = "info";
+    date.innerHTML = element.date;
+    mssg.appendChild(header);
+    mssg.appendChild(content);
+    mssg.appendChild(date);
+    document.getElementById("all-mssgs").appendChild(mssg);
+}
 
     
 
