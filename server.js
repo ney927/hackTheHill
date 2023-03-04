@@ -142,30 +142,25 @@ app.post("/api/addEvent", (req, res) => {
   }
 });
 
-app.post("/api/addUser", (req, res) => {
-  console.log("Add user");
-  console.log(req.body);
-
-  const { error, value: { user, password } = {} } = createUserSchema.validate(
-    req.body
-  );
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
   app.post('/api/addUser', (req, res) => {
+    
+        console.log("Add user")
+        console.log(req.body)
+    
+        console.log(dataBase);
 
-    console.log("Add user")
-    console.log(req.body)
-
-    console.log(dataBase);
+    const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
+    if (error) {
+      res.status(400).send(error.details[0].message);
+    }
     console.log(req.body.user);
+
+    
     if (dataBase[req.body.user]) {
       console.log("contains user");
-      res.status(409).send("Username taken");
-
+      return res.status(409).send("Username taken");
     } else {
-      console.log("does not contain user");
+      console.log("does not contain user: "+req.body.user);
 
       // User is available, add to the database
       dataBase[req.body.user] = {
@@ -176,30 +171,18 @@ app.post("/api/addUser", (req, res) => {
 
       fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-      res.send(true);
+      return res.send(true);
     }
-
-     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
-     if (error) {
-         res.status(400).send(error.details[0].message);
-     }
-
-     if (dataBase[user]) {
-         res.status(409).send("Username taken");
-     }
   });
 
   app.post('/api/getData', (req, res) => {
     console.log("Get Data")
     console.log(req.body)
 
-
-
     const { error, value: { user } = {} } = getD.validate(req.body);
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
-
     if (dataBase[user]) {
       const userData = dataBase[user]; // Get the user data from the database
       return res.json(userData); // Send the user data as a JSON response
@@ -223,4 +206,4 @@ app.post("/api/addUser", (req, res) => {
     res.sendFile(htmlFilePath); // Send the HTML file
   });
 
-    console.log(`Server listening at http://localhost:${port}`);
+  console.log(`Server listening at http://localhost:${port}`)
