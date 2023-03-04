@@ -40,6 +40,7 @@ const getDataSchema = Joi.object({
 
 console.log('Finding database\n')
 const dataPath = 'data.json';
+var dataBase
 fs.readFile(dataPath, 'utf8', (err, data) => {
     if (err) {
         console.error(err);
@@ -47,6 +48,7 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
     }
     try {
         const jsonData = JSON.parse(data);
+        dataBase = jsonData;
         console.log(jsonData);
     } catch (e) {
         console.error(`Failed to parse JSON: ${e}`);
@@ -63,7 +65,7 @@ app.post('/api/addMessage', (req, res) => {
     if (dataBase[user]) {
 
         // add to the database
-        dataBase[user].events.append({
+        dataBase[user].events.push({
             from: from,
             app: app,
             title: title,
@@ -82,6 +84,11 @@ app.post('/api/addMessage', (req, res) => {
 
 
 app.post('/api/addEvent', (req, res) => {
+
+    console.log("Add event" + req.body)
+    console.log(dataBase)
+
+
     const { error, value: { user, title, description, date } = {} } = createEventSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -90,7 +97,7 @@ app.post('/api/addEvent', (req, res) => {
     if (dataBase[user]) {
 
         // add to the database
-        dataBase[user].messages.append({
+        dataBase[user].messages.push({
             title: title,
             description: description,
             date: date,
@@ -107,7 +114,6 @@ app.post('/api/addEvent', (req, res) => {
 
 
 
-const dataBase = {}; // Initialize an empty object to hold user data
 app.post('/api/addUser', (req, res) => {
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {

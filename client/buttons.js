@@ -1,7 +1,7 @@
 
 
 
-getMessages(user){
+function getMessages(user){
 
     let data
 
