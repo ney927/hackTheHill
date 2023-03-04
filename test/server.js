@@ -9,7 +9,6 @@ const { json } = require('stream/consumers')
 
 dataPath = "data.json"
 
-
 userFormatPath = "jsonFormats/addUserFormat.json"
 userFormatFile = fs.open(userFormatPath)
 userFormat = JSON.parse(fs.readFile(userFormatFile))
@@ -20,16 +19,15 @@ eventFormatFile = fs.open(eventFormatPath)
 eventFormat = JSON.parse(fs.readFile(eventFormatFile))
 fs.close(eventFormatFile);
 
-
 const ROOT_DIR = 'html' //dir to serve static files from
 
 console.log('Finding database\n')
 
-fs.exists(songFile, (exists) => {
+fs.exists(dataFile, (exists) => {
   if(exists){
-    console.log(songFile + '<--EXISTS')
+    console.log(dataFile + '<--EXISTS')
     //Found the song file
-    fs.readFile(songFile, function(err, data) {
+    fs.readFile(dataFile, function(err, data) {
       //Read song data file and send lines and chords to client
       if (err) {
 
@@ -39,8 +37,8 @@ fs.exists(songFile, (exists) => {
 
       } else {
         
-console.log('Loading Data\n')
-        var dataBase =  JSON.parse(dataPath)
+        console.log('Loading Data\n')
+        var dataBase =  JSON.parse(data)
         console.log('Successfully Loaded Data\n')
 
       }
@@ -108,15 +106,55 @@ http.createServer(function(request, response) {
 
     if (request.method === "POST" && urlObj.pathname === "/addUser") {
       if(validateJSON(urlObj.data,userFormat)){
+        let addUser = urlObj.data;
+        //
+        if(dataBase[addUser.user]===undefined){
+          //username not taken
 
-      
+          // Read the JSON file and parse it into an object
+          const rawData = fs.readFileSync('data.json');
+          const data = JSON.parse(rawData);
 
+          //add user to database
+          dataBase[addUser.user] = {
+            "password":addUser.password,
+            "events":[],
+            "messages":[]
+          }
+
+          // Write the updated object back to the file
+          fs.writeFileSync('data.json', JSON.stringify(data));
+                    
+        }
+        
       }
     }
     else if (request.method === "POST" && urlObj.pathname === "/addEvent") {
-      
+      if(validateJSON(urlObj.data,userFormat)){
+        let addUser = urlObj.data;
+        //
+        if(dataBase[addUser.user]===undefined){
+          //username not taken
+
+          // Read the JSON file and parse it into an object
+          const rawData = fs.readFileSync('data.json');
+          const data = JSON.parse(rawData);
+
+          //add user to database
+          dataBase[addUser.user] = {
+            "password":addUser.password,
+            "events":[],
+            "messages":[]
+          }
+
+          // Write the updated object back to the file
+          fs.writeFileSync('data.json', JSON.stringify(data));
+                    
+        }
+        
+      }
     }
-    
+
     
 
     
