@@ -10,8 +10,8 @@ const Joi = require('joi');
 
 
 const createUserSchema = Joi.object({
-    name: Joi.string().required(),
-    //email: Joi.string().email().required(),
+    userName: Joi.string().required(),
+    email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
 });
 
@@ -143,9 +143,22 @@ app.post('/api/getData', (req, res) => {
 
 });
 
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/html/index.html');
-})
+app.get('*', function(req, res) {
+
+    let requestedPath = req.path; // Get the requested path from the request object
+    console.log(requestedPath);
+
+    if(requestedPath==="/"){
+        requestedPath = "/sign-in.html"
+    }
+
+    const htmlFilePath = __dirname + '/pages' + requestedPath; // Construct the file path to the HTML file
+
+    console.log(htmlFilePath);
+
+    res.sendFile(htmlFilePath); // Send the HTML file
+  });
+  
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
