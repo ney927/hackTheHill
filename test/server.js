@@ -5,12 +5,23 @@ const http = require('http') //need to http
 const fs = require('fs') //need to read static files
 const url = require('url') //to parse url strings
 const { exit } = require('process')
+const { json } = require('stream/consumers')
 
 dataPath = "data.json"
 
 
-const ROOT_DIR = 'html' //dir to serve static files from
+userFormatPath = "jsonFormats/addUserFormat.json"
+userFormatFile = fs.open(userFormatPath)
+userFormat = JSON.parse(fs.readFile(userFormatFile))
+fs.close(userFormatFile);
 
+eventFormatPath = "jsonFormats/addEventFormat.json"
+eventFormatFile = fs.open(eventFormatPath)
+eventFormat = JSON.parse(fs.readFile(eventFormatFile))
+fs.close(eventFormatFile);
+
+
+const ROOT_DIR = 'html' //dir to serve static files from
 
 console.log('Finding database\n')
 
@@ -41,6 +52,32 @@ console.log('Loading Data\n')
 
 
 
+function validateJSON(json, format) {
+  // Check if both inputs are valid JSON objects
+  if (!json || typeof json !== "object") {
+    throw new Error("Invalid JSON object provided.");
+  }
+  if (!format || typeof format !== "object") {
+    throw new Error("Invalid JSON format provided.");
+  }
+
+  // Check if each key in the format exists in the input
+  for (let key in format) {
+    if (!json.hasOwnProperty(key)) {
+      return false;
+    }
+
+    // Check if the value types match
+    if (!(json[key] instanceof format[key])) {
+      return false;
+    }
+  }
+
+  // If all checks pass, return true
+  return true;
+}
+
+
 
 
 http.createServer(function(request, response) {
@@ -65,23 +102,21 @@ http.createServer(function(request, response) {
     console.log('received data: ', receivedData)
     console.log('type: ', typeof receivedData)
 
-    //Get data from any POST request
-    if (request.method == "POST") {
-      //Do this for all POST messages
-      dataObj = JSON.parse(receivedData)
-      console.log("received data object: ", dataObj)
-      console.log("type: ", typeof dataObj)
-      console.log("USER REQUEST: " + dataObj.text)
-      returnObj.text = "METHOD NOT FOUND: " + dataObj.text
-    }
-
+    
+    dataObj = json.parse(urlObj.data)
+    returnObj.text = "ERROR"//error until proven otherwise
 
     if (request.method === "POST" && urlObj.pathname === "/addUser") {
+      if(validateJSON(urlObj.data,userFormat)){
 
+      
+
+      }
     }
-    if (request.method === "POST" && urlObj.pathname === "/addEvent") {
+    else if (request.method === "POST" && urlObj.pathname === "/addEvent") {
       
     }
+    
     
 
     
