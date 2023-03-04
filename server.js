@@ -66,7 +66,7 @@ app.post('/api/login', (req, res) => {
     console.log("Login ");
     console.log(req.body)
 
-    const { error, value: { user, from, app, title, content, date } = {} } = createMessageSchema.validate(req.body);
+    const { error, value: { user, password } = {} } = loginSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -74,21 +74,14 @@ app.post('/api/login', (req, res) => {
     if (dataBase[user]) {
 
         // add to the database
-        dataBase[user].events.push({
-            from: from,
-            app: app,
-            title: title,
-            content: content,
-            date: date,
-        })
-
-        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
-
-        return res.send('Event added successfully');
-
+        if( hash(password) === dataBase[user].password){
+            return res.send(true)
+        }else{
+            return res.send(false)
+        }
     }
     else {
-        return res.status(409).send('User does not exist');
+        return res.status(409).send(false);
     }
 
 });
