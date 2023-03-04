@@ -57,7 +57,7 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 
 
 app.post('/api/addMessage', (req, res) => {
-    const { error, value: { user, from, app, title, content, date } = {} } = createEventSchema.validate(req.body);
+    const { error, value: { user, from, app, title, content, date } = {} } = createMessageSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -87,7 +87,6 @@ app.post('/api/addEvent', (req, res) => {
 
     console.log("Add event" + req.body)
     console.log(dataBase)
-
 
     const { error, value: { user, title, description, date } = {} } = createEventSchema.validate(req.body);
     if (error) {
