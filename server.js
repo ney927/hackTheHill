@@ -11,7 +11,7 @@ const Joi = require('joi');
 
 const createUserSchema = Joi.object({
     user: Joi.string().required(),
-    email: Joi.string().email().required(),
+    //email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
 });
 
@@ -168,7 +168,7 @@ app.post('/api/addUser', (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
 
-    if (dataBase[user]) {
+    if (dataBase[user]!==undefined) {
         return res.status(409).send("Username taken");
     }
 
