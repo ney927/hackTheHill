@@ -23,6 +23,11 @@ const createEventSchema = Joi.object({
     date: Joi.string().required(),
 });
 
+const loginSchema = Joi.object({
+    user: Joi.string().required(),
+    password: Joi.string().required(),
+});
+
 const createMessageSchema = Joi.object({
     user: Joi.string().required(),
     from: Joi.string().required(),
@@ -56,7 +61,37 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 });
 
 
+
+app.post('/api/login', (req, res) => {
+    console.log("Login ");
+    console.log(req.body)
+
+    const { error, value: { user, password } = {} } = loginSchema.validate(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
+    }
+
+    if (dataBase[user]) {
+
+        // add to the database
+        if( hash(password) === dataBase[user].password){
+            return res.send(true)
+        }else{
+            return res.send(false)
+        }
+    }
+    else {
+        return res.status(409).send(false);
+    }
+
+});
+
+
 app.post('/api/addMessage', (req, res) => {
+    console.log("Add message");
+    console.log(req.body)
+
+
     const { error, value: { user, from, app, title, content, date } = {} } = createMessageSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -73,6 +108,8 @@ app.post('/api/addMessage', (req, res) => {
             date: date,
         })
 
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
         return res.send('Event added successfully');
 
     }
@@ -85,8 +122,8 @@ app.post('/api/addMessage', (req, res) => {
 
 app.post('/api/addEvent', (req, res) => {
 
-    console.log("Add event" + req.body)
-    console.log(dataBase)
+    console.log("Add event") 
+    console.log(req.body)
 
     const { error, value: { user, title, description, date } = {} } = createEventSchema.validate(req.body);
     if (error) {
@@ -102,6 +139,8 @@ app.post('/api/addEvent', (req, res) => {
             date: date,
         })
 
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
         return res.send('Event added successfully');
 
     }
@@ -114,6 +153,10 @@ app.post('/api/addEvent', (req, res) => {
 
 
 app.post('/api/addUser', (req, res) => {
+
+    console.log("Add user")
+    console.log(req.body)
+
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -130,10 +173,15 @@ app.post('/api/addUser', (req, res) => {
         password: password,
     };
 
+    fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
     return res.send('User added successfully');
 });
 
 app.post('/api/getData', (req, res) => {
+    console.log("Get Data")
+    console.log(req.body)
+
     const { error, value: { user } = {} } = getD.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
