@@ -77,6 +77,8 @@ app.post('/api/addMessage', (req, res) => {
             date: date,
         })
 
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
         return res.send('Event added successfully');
 
     }
@@ -105,6 +107,8 @@ app.post('/api/addEvent', (req, res) => {
             description: description,
             date: date,
         })
+
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
         return res.send('Event added successfully');
 
@@ -137,6 +141,8 @@ app.post('/api/addUser', (req, res) => {
         events: [],
         password: password,
     };
+
+    fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
     return res.send('User added successfully');
 });
