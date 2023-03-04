@@ -1,7 +1,1 @@
-{
-    "steve":{
-        "password":"password123",
-        "events":[],
-        "messages":[]
-    }
-}
+{"steve":{"password":"password123","events":[{"from":"Admin","app":"Manual  Test","title":"Test","content":"\"YO dawag\"","date":"5/4/2023"}],"messages":[]}}

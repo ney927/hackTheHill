@@ -10,8 +10,8 @@ const Joi = require('joi');
 
 
 const createUserSchema = Joi.object({
-    name: Joi.string().required(),
-    //email: Joi.string().email().required(),
+    userName: Joi.string().required(),
+    email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
 });
 
@@ -40,6 +40,7 @@ const getDataSchema = Joi.object({
 
 console.log('Finding database\n')
 const dataPath = 'data.json';
+var dataBase
 fs.readFile(dataPath, 'utf8', (err, data) => {
     if (err) {
         console.error(err);
@@ -47,6 +48,7 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
     }
     try {
         const jsonData = JSON.parse(data);
+        dataBase = jsonData;
         console.log(jsonData);
     } catch (e) {
         console.error(`Failed to parse JSON: ${e}`);
@@ -55,7 +57,11 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 
 
 app.post('/api/addMessage', (req, res) => {
-    const { error, value: { user, from, app, title, content, date } = {} } = createEventSchema.validate(req.body);
+    console.log("Add message");
+    console.log(req.body)
+
+
+    const { error, value: { user, from, app, title, content, date } = {} } = createMessageSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -63,13 +69,15 @@ app.post('/api/addMessage', (req, res) => {
     if (dataBase[user]) {
 
         // add to the database
-        dataBase[user].events.append({
+        dataBase[user].events.push({
             from: from,
             app: app,
             title: title,
             content: content,
             date: date,
         })
+
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
         return res.send('Event added successfully');
 
@@ -82,6 +90,10 @@ app.post('/api/addMessage', (req, res) => {
 
 
 app.post('/api/addEvent', (req, res) => {
+
+    console.log("Add event") 
+    console.log(req.body)
+
     const { error, value: { user, title, description, date } = {} } = createEventSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -90,11 +102,13 @@ app.post('/api/addEvent', (req, res) => {
     if (dataBase[user]) {
 
         // add to the database
-        dataBase[user].messages.append({
+        dataBase[user].messages.push({
             title: title,
             description: description,
             date: date,
         })
+
+        fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
         return res.send('Event added successfully');
 
@@ -107,8 +121,11 @@ app.post('/api/addEvent', (req, res) => {
 
 
 
-const dataBase = {}; // Initialize an empty object to hold user data
 app.post('/api/addUser', (req, res) => {
+
+    console.log("Add user")
+    console.log(req.body)
+
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -125,10 +142,15 @@ app.post('/api/addUser', (req, res) => {
         password: password,
     };
 
+    fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+
     return res.send('User added successfully');
 });
 
 app.post('/api/getData', (req, res) => {
+    console.log("Get Data")
+    console.log(req.body)
+
     const { error, value: { user } = {} } = getD.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
@@ -143,9 +165,22 @@ app.post('/api/getData', (req, res) => {
 
 });
 
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/html/index.html');
-})
+app.get('*', function(req, res) {
+
+    let requestedPath = req.path; // Get the requested path from the request object
+    console.log(requestedPath);
+
+    if(requestedPath==="/"){
+        requestedPath = "/sign-in.html"
+    }
+
+    const htmlFilePath = __dirname + '/pages' + requestedPath; // Construct the file path to the HTML file
+
+    console.log(htmlFilePath);
+
+    res.sendFile(htmlFilePath); // Send the HTML file
+  });
+  
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
