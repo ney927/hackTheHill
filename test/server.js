@@ -187,7 +187,7 @@ http.createServer(function (request, response) {
 
     else if (request.method === "POST" && urlObj.pathname === "/getData") {
 
-      if (validateJSON(urlObj.data, dataGetFormat)) {
+      //if (validateJSON(urlObj.data, dataGetFormat)) {
 
         let getUser = urlObj.data;
         if (dataBase[getUser.user] === undefined) {
