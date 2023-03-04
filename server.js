@@ -67,21 +67,20 @@ app.post("/api/login", (req, res) => {
   }
 
   if (dataBase[user]) {
-    const saltRounds = 10;
-    const salt = bcrypt.genSaltSync(saltRounds);
+    //const saltRounds = 10;
+    //const salt = bcrypt.genSaltSync(saltRounds);
 
     // Hash the password with the salt
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    //const hashedPassword = bcrypt.hashSync(password, salt);
 
     // add to the database
-    if (hashedPassword === dataBase[user].password) {
+    if (password === dataBase[user].password) {
       return res.send(true)
     } else {
-      return res.status(409).send("Incorrect password");
+      return res.send(false);
     }
-  }
-  else {
-    return res.status(409).send("User not found");
+  } else{
+    return res.send(false);
   }
 });
 
@@ -141,23 +140,16 @@ app.post("/api/addEvent", (req, res) => {
 
   app.post('/api/addUser', (req, res) => {
     
-      console.log("Add user")
-      console.log(req.body)
-  
-      console.log(dataBase);
+    console.log(req.body)
 
     const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
     }
-    console.log(req.body.user);
-
     
     if (dataBase[req.body.user]) {
-      console.log("contains user");
-      return res.send("Username taken");
+      return res.send(false);    
     } else {
-      console.log("does not contain user: "+req.body.user);
 
       // User is available, add to the database
       dataBase[req.body.user] = {
@@ -168,8 +160,10 @@ app.post("/api/addEvent", (req, res) => {
 
       fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-      return res.send(true);
+      return res.send(true)
     }
+
+
   });
 
   app.post('/api/getData', (req, res) => {
