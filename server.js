@@ -7,6 +7,7 @@ const fs = require("fs");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 
+//start the user off as steve
 let user = 'steve';
 
 const createUserSchema = Joi.object({
@@ -35,6 +36,13 @@ const createMessageSchema = Joi.object({
   date: Joi.string().required(),
 });
 
+
+
+
+
+
+
+
 const getDataSchema = Joi.object({
   user: Joi.string().required(),
   //probably should authenticate
@@ -60,33 +68,15 @@ fs.readFile(dataPath, "utf8", (err, data) => {
 
 
 app.post('/api/login', (req, res) => {
-    console.log("Login ");
-    console.log(req.body)
 
-    const { error, value: { user, password } = {} } = loginSchema.validate(req.body);
-    if (error) {
-        return res.status(400).send(error.details[0].message);
-    }
+  console.log("INSIDE HERE");
 
-    if (dataBase[user]!==undefined) {
-
-        const saltRounds = 10;
-        const salt = bcrypt.genSaltSync(saltRounds);
-        
-        // Hash the password with the salt
-        const hashedPassword = bcrypt.hashSync(password, salt)
-
-        
-        // add to the database
-        if( hashedPassword === dataBase[user].password){
-            return res.send(true)
-        }else{
-            return res.send(false)
-        }
-    }
-    else {
-        return res.status(409).send(false);
-    }
+  console.log(dataBase[req.body.user]);
+   if(dataBase[req.body.user] != null){
+    console.log("found match");
+    res.status(200);
+    res.send();
+   }
 
 });
 
@@ -118,6 +108,27 @@ app.post("/api/addMessage", (req, res) => {
   } else {
     return res.send(false);
   }
+});
+
+app.post("/getTasks", (req, res) => {
+console.log("retreive the tasks");
+console.log(dataBase[user]);
+let tasks = dataBase[user].events;
+console.log("tasks are " + JSON.stringify(tasks));
+res.status(200);
+res.send(JSON.stringify(tasks));
+
+});
+
+
+app.post("/getMessages", (req, res) => {
+  console.log("retreive the messages");
+  console.log(dataBase[user]);
+  let mes = dataBase[user].messages;
+  console.log("messages are " + JSON.stringify(mes));
+  res.status(200);
+  res.send(JSON.stringify(mes));
+  
 });
 
 app.post("/api/addEvent", (req, res) => {
@@ -192,14 +203,14 @@ app.post('/api/addUser', (req, res) => {
     } else {
       return res.status(409).send("User not found");
     }
-
+  });
 
  app.get("*", function (req, res) {
     let requestedPath = req.path; // Get the requested path from the request object
     //console.log(requestedPath);
 
     if (requestedPath === "/") {
-      requestedPath = "/sign-in.html";
+      requestedPath = "/sign-up.html";
     }
 
     if (requestedPath === "/test"){
@@ -219,4 +230,4 @@ app.post('/api/addUser', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
-})
+});

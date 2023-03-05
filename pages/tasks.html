@@ -72,6 +72,13 @@
 
 // messages sample:
 
+console.log("THIS PAGE HAS LOADED MAKE A REQUEST ");
+
+//send a request to the server to update the likes and then re render the page to show the right amount of 
+
+
+
+
 messages = [
     {
         from: "testdata",
@@ -111,7 +118,29 @@ messages = [
 
 ];
 
-//replace the sample data with the data from the database
+let req = new XMLHttpRequest();
+req.onreadystatechange = function() {
+	if(this.readyState==4 && this.status==200){
+            console.log("received array of tasks");
+            console.log("tasks are: ");
+            //console.log(res.body);
+            let resp = JSON.parse(this.responseText);
+            console.log(resp);
+            messages = resp;
+            generate_chart();
+
+
+            //re render the page, the ino should now be updated?    
+	}
+}
+console.log("sending request to server");
+req.open("POST", `/getTasks`);
+req.setRequestHeader("Content-Type", "application/json");
+req.send();
+
+
+function generate_chart(){
+    //replace the sample data with the data from the database
 for (let i = 0; i < messages.length; i++) {
     const element = messages[i];
     let mssg = document.createElement("div");
@@ -137,6 +166,11 @@ for (let i = 0; i < messages.length; i++) {
     mssg.appendChild(date);
     document.getElementById("all-mssgs").appendChild(mssg);
 }
+
+
+
+}
+
 
 
 function checkedOff(checkbox){

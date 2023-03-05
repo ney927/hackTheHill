@@ -11,16 +11,21 @@ function submit_pressed(){
     let username = document.getElementById("exampleInputEmail1").value ;
 	let pw = document.getElementById("exampleInputPassword1").value ;
 
-	let un_and_pw = {"user"  : username , "password" : pw};
+	let body = {"user"  : username , "password" : pw};
 
     let req = new XMLHttpRequest();
 	req.onreadystatechange = function() {
-		console.log(res);
+		//console.log(res);
 		if(this.readyState==4 && this.status==200){
 
 			alert("password has been received" );
-            console.log(res.body);
 			
+			//change location to be the user 
+			location.href = "http://localhost:3000/user.html";
+			
+		}else{
+			//alert("incorrect password please try again");
+			console.log("incorrect password");
 		}
 	}
     req.open("POST", `/api/login`);

@@ -31,7 +31,69 @@
     <div id="all-mssgs">
         
     </div>
-    <script src="client/mssgs.js"></script>
+    <script >
+
+      
+const all_mssg_div = document.getElementById('all-mssgs');
+
+
+
+    console.log("inside the messages page, Get messages");
+
+    let req = new XMLHttpRequest();
+req.onreadystatechange = function() {
+	if(this.readyState==4 && this.status==200){
+            console.log("received array of messages");
+            console.log("messages: ");
+            //console.log(res.body);
+            let resp = JSON.parse(this.responseText);
+            console.log(resp);
+            messages = resp;
+            gen_messages();
+
+
+            //re render the page, the ino should now be updated?    
+	}
+}
+console.log("sending request to server");
+req.open("POST", `/getMessages`);
+req.setRequestHeader("Content-Type", "application/json");
+req.send();
+
+
+
+function gen_messages(){
+       //displaying the messages
+       messages.forEach(element => {
+        const mssg_div = document.createElement('div');
+        mssg_div.className = 'mssg';
+
+        const header = document.createElement('p');
+        header.className = 'header';
+        header.innerHTML = element.title;
+
+        const content = document.createElement('p');
+        content.className = 'content';
+        content.innerHTML = element.description;
+
+        const info = document.createElement('p');
+        info.className = 'info';
+        info.innerHTML = element.date + '&emsp;' + element.from + '&emsp;' + element.app;
+
+        mssg_div.appendChild(header);
+        mssg_div.appendChild(content);
+        mssg_div.appendChild(info);
+
+        all_mssg_div.appendChild(mssg_div);
+    });
+
+}
+
+
+
+
+
+    </script>
 </body>
 
 
