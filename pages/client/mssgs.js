@@ -3,6 +3,7 @@
 const all_mssg_div = document.getElementById('all-mssgs');
 
 
+<<<<<<< HEAD
 function load(){
 
     console.log("inside the messages page, Get messages");
@@ -12,6 +13,13 @@ function load(){
 function gen_messages(){
        //displaying the messages
        messages.forEach(element => {
+=======
+
+
+
+    //displaying the messages
+    messages.forEach(element => {
+>>>>>>> de62ef2acdb93e3d81996a602f65e820c589fcc2
         const mssg_div = document.createElement('div');
         mssg_div.className = 'mssg';
 
@@ -34,7 +42,11 @@ function gen_messages(){
         all_mssg_div.appendChild(mssg_div);
     });
 
-}
 
 
+<<<<<<< HEAD
  
+=======
+
+
+>>>>>>> de62ef2acdb93e3d81996a602f65e820c589fcc2
