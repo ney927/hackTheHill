@@ -1,4 +1,4 @@
-/*
+
 messages = [
     {
         from: "testdata",
@@ -29,17 +29,28 @@ messages = [
         date: "testdata"
     }
 ];
-*/
+
+
 const all_mssg_div = document.getElementById('all-mssgs');
 
 
 console.log("Get messages")
 
-if (user === "") {
+//TEST PURPOSES: 
+let user = "";
+data = getUserData(user)
+console.log(data)
+
+/*if (user === "") {
 
     //go login
-    alert("go login noob")
+    const div = document.getElementById('all-mssgs');
 
+    const login = document.createElement('p');
+    login.className = 'header'
+    login.innerHTML = "Login to view your messages"
+
+    div.appendChild(login);
 }
 else {
     data = getUserData(user)
@@ -74,6 +85,8 @@ else {
 
 }
 
+*/
+
 function getUserData(user) {
 
     let data
@@ -107,7 +120,7 @@ function getUserData(user) {
             }
         })
         .then(data => {
-            console.log(data); // Do something with the user data
+            console.log("slay my",data); // Do something with the user data
         })
         .catch(error => {
             console.error(error);

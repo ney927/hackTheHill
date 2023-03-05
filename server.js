@@ -7,6 +7,8 @@ const fs = require("fs");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 
+let user = 'steve';
+
 const createUserSchema = Joi.object({
   user: Joi.string().required(),
   password: Joi.string().required(),
@@ -149,7 +151,7 @@ app.post("/api/addEvent", (req, res) => {
   }
 });
 
-  app.post('/api/addUser', (req, res) => {
+app.post('/api/addUser', (req, res) => {
     
     console.log(req.body)
 
@@ -186,7 +188,8 @@ app.post("/api/addEvent", (req, res) => {
     console.log("Get Data")
     console.log(req.body)
 
-    const { error, value: { user } = {} } = getD.validate(req.body);
+    const { error, value: { fake_user } = {} } = getDataSchema.validate(req.body);
+
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
@@ -198,17 +201,25 @@ app.post("/api/addEvent", (req, res) => {
     }
   });
 
-  app.get("*", function (req, res) {
+
+ app.get("*", function (req, res) {
     let requestedPath = req.path; // Get the requested path from the request object
-    console.log(requestedPath);
+    //console.log(requestedPath);
 
     if (requestedPath === "/") {
       requestedPath = "/sign-in.html";
     }
 
+    if (requestedPath === "/test"){
+      user = 'steve'
+      console.log(dataBase[user]);
+      // requestedPath = '/index.html';
+      res.sendFile()
+    }
+
     const htmlFilePath = __dirname + "/pages" + requestedPath; // Construct the file path to the HTML file
 
-    console.log(htmlFilePath);
+    //console.log(htmlFilePath);
 
     res.sendFile(htmlFilePath); // Send the HTML file
   });
