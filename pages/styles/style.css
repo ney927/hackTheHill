@@ -49,13 +49,6 @@ body{
     margin-top: 10px;
 }
 
-.header:hover{
-    cursor: pointer;
-    text-decoration: underline;
-    color: #153563;
-    font-weight: bolder;
-}
-
 .info {
     color:#535f6f;
     margin: 5px 0;
@@ -99,3 +92,12 @@ body{
     padding: 10px;
     font-size: 20px;
 }
+
+/* .card-body{
+    margin-top: 50px;
+} */
+
+.px-4{
+    width: 300px;
+}
+
