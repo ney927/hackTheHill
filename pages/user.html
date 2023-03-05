@@ -52,7 +52,7 @@
                             class="img-fluid my-5"
                             style="width: 80px; display: inline;"
                           />
-                          Marie Horwitz
+                          Steve
                         </h5>
                         <p>Company Name</p>
                         <i class="far fa-edit mb-5"></i>
@@ -97,36 +97,6 @@
 
         <div class="col-lg-8" style="margin-left: -5% ">
           <div id="all-mssgs">
-            <div class="mssg">
-                <p class="header">Email Header</p>
-                <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
-                <p class="info">User Name &emsp; App Name</p>
-            </div>
-            <div class="mssg">
-                <p class="header">Message from User</p>
-                <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
-                <p class="info">User Name &emsp; App Name</p>
-            </div>
-            <div class="mssg">
-                <p class="header">Email Header</p>
-                <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
-                <p class="info">User Name &emsp; App Name</p>
-            </div>
-            <div class="mssg">
-                <p class="header">Message from User</p>
-                <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
-                <p class="info">User Name &emsp; App Name</p>
-            </div>
-            <div class="mssg">
-                <p class="header">Message from User</p>
-                <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
-                <p class="info">User Name &emsp; App Name</p>
-            </div>
-            <div class="mssg">
-                <p class="header">Email Header</p>
-                <p class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, asperiores.</p>
-                <p class="info">User Name &emsp; App Name</p>
-            </div>
           </div>
         </div>
 
@@ -135,4 +105,126 @@
     </div>
   </body>
   <script src="/client/user.js"></script>
+  <script >
+
+
+
+    
+
+
+console.log("THIS PAGE HAS LOADED MAKE A REQUEST ");
+
+//send a request to the server to update the likes and then re render the page to show the right amount of 
+
+
+
+
+messages = [
+    {
+        from: "testdata",
+        app: "testdata",
+        title: "testdata",
+        content: "testdata content",
+        date: "01/01/2020"
+    },
+    {
+        from: "testdata1",
+        app: "testdata1",
+        title: "testdata1",
+        content: "testdata1 content",
+        date: "01/01/2021"
+    },
+    {
+        from: "testdata2",
+        app: "testdata2",
+        title: "testdata2",
+        content: "testdata2 content",
+        date: "01/01/2022"
+    },
+    {
+        from: "testdata3",
+        app: "testdata3",
+        title: "testdata3",
+        content: "testdata3  content",
+        date: "01/01/2023"
+    },
+    {
+        from: "testdata4",
+        app: "testdata4",
+        title: "testdata4",
+        content: "testdata4  content",
+        date: "01/01/2024"
+    },
+
+];
+
+let req = new XMLHttpRequest();
+req.onreadystatechange = function() {
+	if(this.readyState==4 && this.status==200){
+            console.log("received array of tasks");
+            console.log("tasks are: ");
+            //console.log(res.body);
+            let resp = JSON.parse(this.responseText);
+            console.log(resp);
+            messages = resp;
+            generate_chart();
+
+
+            //re render the page, the ino should now be updated?    
+	}
+}
+console.log("sending request to server");
+req.open("POST", `/getTasks`);
+req.setRequestHeader("Content-Type", "application/json");
+req.send();
+
+
+function generate_chart(){
+    //replace the sample data with the data from the database
+for (let i = 0; i < messages.length; i++) {
+    const element = messages[i];
+    let mssg = document.createElement("div");
+    mssg.className = "mssg";
+    let header = document.createElement("p");
+    header.className = "header";
+    header.innerHTML = element.title;
+    let content = document.createElement("p");
+    content.className = "content";
+    content.innerHTML = element.content;
+    let date = document.createElement("p");
+    date.className = "info";
+    date.innerHTML = element.date;
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "checkbox";
+    checkbox.id = "checkbox" + i; //in final this will be task id
+
+    checkbox.onclick = function(){checkedOff(checkbox)};
+    mssg.appendChild(checkbox);
+    mssg.appendChild(header);
+    mssg.appendChild(content);
+    mssg.appendChild(date);
+    document.getElementById("all-mssgs").appendChild(mssg);
+}
+
+
+
+}
+
+
+
+function checkedOff(checkbox){
+    if(checkbox.checked){
+        checkbox.parentElement.style.backgroundColor = "#A0AB90";
+    } else {
+        checkbox.parentElement.style.backgroundColor = "#8F99AB";
+    }
+
+}
+
+
+
+    
+    
+        </script>
 </html>

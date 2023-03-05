@@ -17,8 +17,8 @@ function submit_pressed(){
 	req.onreadystatechange = function() {
 		//console.log(res);
 		if(this.readyState==4 && this.status==200){
-
-			alert("password has been received" );
+			
+			//alert("password has been received" );
 			
 			//change location to be the user 
 			location.href = "http://localhost:3000/user.html";

@@ -51,6 +51,7 @@ const getDataSchema = Joi.object({
 console.log("Finding database\n");
 const dataPath = "data.json";
 var dataBase;
+
 fs.readFile(dataPath, "utf8", (err, data) => {
   if (err) {
     console.error(err);
@@ -85,20 +86,22 @@ app.post("/api/addMessage", (req, res) => {
   console.log(req.body);
 
   //check input matches expected json
-  const { error, value: { user, from, app, title, content, date } = {} } =
-    createMessageSchema.validate(req.body);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
+  // const { error, value: { user, from, app, title, content, date } = {} } =
+  //   createMessageSchema.validate(req.body);
+  // if (error) {
+  //   return res.status(400).send(error.details[0].message);
+  // }
 
-  if (dataBase[user]) {
+  the_user = req.body.user
+
+  if (dataBase[the_user]) {
     // add to the database
-    dataBase[user].events.push({
-      from: from,
-      app: app,
-      title: title,
-      content: content,
-      date: date,
+    dataBase[the_user].messages.push({
+      from: req.body.from,
+      app: req.body.app,
+      title: req.body.title,
+      content: req.body.content,
+      date: req.body.date,
     });
 
     //update database file
@@ -136,20 +139,23 @@ app.post("/api/addEvent", (req, res) => {
   console.log(req.body);
 
   //checking that input matches expected json
-  const { error, value: { user, title, description, date } = {} } =
-    createEventSchema.validate(req.body);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
+  // const { error, value: { user, title, description, date } = {} } =
+  //   createEventSchema.validate(req.body);
+  // if (error) {
+  //   return res.status(400).send(error.details[0].message);
+  // }
 
   //if user is in database
-  if (dataBase[user]) {
+  the_user = req.body.user
+  console.log("added to ",the_user);
+  console.log(dataBase[the_user]);
+  if (dataBase[the_user]) {
     
     //append event to user's event array
-    dataBase[user].messages.push({
-      title: title,
-      description: description,
-      date: date,
+    dataBase[the_user].events.push({
+      title: req.body.title,
+      content: req.body.description,
+      date: req.body.date,
     });
 
     //update database file

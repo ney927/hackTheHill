@@ -125,6 +125,20 @@ h1{
     border: 1px solid #081d39;
 }
 
+#l{
+    margin: 0 100px;
+    color: white;
+}
+
+.btn-primary{
+    display: block;
+    margin: 0 100px;
+}
+
+.form-text, .form-control{
+    width: 300px;
+}
+
 .checkbox{
     margin: 10px 0;
     height: 1rem;
