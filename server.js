@@ -58,37 +58,36 @@ fs.readFile(dataPath, "utf8", (err, data) => {
   }
 });
 
-app.post("/api/login", (req, res) => {
-  console.log("Login ");
-  console.log(req.body);
 
-  //checking input matches expected json
-  const { error, value: { user, password } = {} } = loginSchema.validate(
-    req.body
-  );
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
+app.post('/api/login', (req, res) => {
+    console.log("Login ");
+    console.log(req.body)
 
-  if (dataBase[user]) {
-    
-    //hashing password
-    //const saltRounds = 10;
-    //const salt = bcrypt.genSaltSync(saltRounds);
-
-    // Hash the password with the salt
-    //const hashedPassword = bcrypt.hashSync(password, salt);
-
-
-    // add to the database
-    if (password === dataBase[user].password) {
-      return res.send(true)
-    } else {
-      return res.send(false);
+    const { error, value: { user, password } = {} } = loginSchema.validate(req.body);
+    if (error) {
+        return res.status(400).send(error.details[0].message);
     }
-  } else{
-    return res.send(false);
-  }
+
+    if (dataBase[user]!==undefined) {
+
+        const saltRounds = 10;
+        const salt = bcrypt.genSaltSync(saltRounds);
+        
+        // Hash the password with the salt
+        const hashedPassword = bcrypt.hashSync(password, salt)
+
+        
+        // add to the database
+        if( hashedPassword === dataBase[user].password){
+            return res.send(true)
+        }else{
+            return res.send(false)
+        }
+    }
+    else {
+        return res.status(409).send(false);
+    }
+
 });
 
 app.post("/api/addMessage", (req, res) => {
@@ -152,37 +151,31 @@ app.post("/api/addEvent", (req, res) => {
 });
 
 app.post('/api/addUser', (req, res) => {
-    
+
+    console.log("Add user")
     console.log(req.body)
 
-    //checking that input matches expected json
-    const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
-    if (error) {
-      res.status(400).send(error.details[0].message);
-    }
-    
-    //is the user in the database?
-    if (dataBase[req.body.user]) {
-      //already exists, name taken
-      return res.send(false);    
-    } else {
+    //const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
 
-      // User is available, add to the database
-      dataBase[req.body.user] = {
-        messages: [],
-        events: [],
-        password: req.body.password
-      };
+    // if (error) {
+    //     return  res.status(400).send(error.details[0].message);
+    // }
 
-      //update database file
-      fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+    // if (dataBase[user]!==undefined) {
+    //     return res.status(409).send("Username taken");
+    // }
 
-      //return true since it succeeded
-      return res.send(true)
-    }
+    // User is available, add to the database
+    // dataBase[user] = {
+    //     messages: [],
+    //     events: [],
+    //     password: password,
+    // };
 
+    // fs.writeFileSync(dataPath, JSON.stringify(dataBase));
 
-  });
+    return res.send(true);
+});
 
   app.post('/api/getData', (req, res) => {
     console.log("Get Data")
@@ -199,7 +192,6 @@ app.post('/api/addUser', (req, res) => {
     } else {
       return res.status(409).send("User not found");
     }
-  });
 
 
  app.get("*", function (req, res) {
@@ -223,7 +215,8 @@ app.post('/api/addUser', (req, res) => {
 
     res.sendFile(htmlFilePath); // Send the HTML file
   });
+  
 
-  app.listen(port, () => {
+app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
 })

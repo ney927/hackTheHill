@@ -124,3 +124,12 @@ h1{
     border-radius: 5px;
     border: 1px solid #081d39;
 }
+
+.checkbox{
+    margin: 10px 0;
+    height: 1rem;
+    border-radius: 10px;
+    color: #C9A6A7;
+    float: right;
+
+}

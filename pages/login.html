@@ -14,7 +14,7 @@
 <body>
     <ul class="nav">
         <li class="nav-item">
-          <a class="nav-link" href="login.html">Login</a>
+          <a class="nav-link" href="sign-in.html">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="user.html">User</a>
@@ -27,34 +27,26 @@
         </li>
       </ul>
 
-    <h1>Login In</h1>
-    <div class="container" id="registration-div">
-      <form>
+    <h1>Sign In</h1>
+    <form>
         <div class="mb-3">
-          <label for="email-input" class="form-label" >Email address</label>
-          <input type="email" class="form-control form-input" id="email-input" aria-describedby="emailHelp" autocomplete="on">
+          <label for="exampleInputEmail1" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" autocomplete="on">
           <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
-          <label for="password-input" class="form-label">Password</label>
-          <input type="password" class="form-control form-input" id="password-input" autocomplete="on">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="on">
         </div>
 
-        <button type="submit" id = "submit" class="btn btn-primary"  onclick="submit_pressed()" >Login</button>
+        <button type="submit" id = "submit" class="btn btn-primary"  onclick="submit_pressed()" >Submit</button>
     </form>
-    <br>
-
-    <p class="text-secondary mb-0">Dont have an account? </p>
-    <a id = "register" class="primary"  href="sign-up.html" > Register </a>
+    <div>Dont have an account ? </div>
+    <button type="register" id = "register" class="btn btn-primary"  onclick="signup_pressed()" >Sign Up </button>
 
     </body>
 
     <script src="/client/sign-in.js"></script>
-
-
-    </div>
-    
-   
 
 
     
