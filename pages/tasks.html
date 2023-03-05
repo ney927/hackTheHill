@@ -101,6 +101,13 @@ messages = [
         content: "testdata3  content",
         date: "01/01/2023"
     },
+    {
+        from: "testdata4",
+        app: "testdata4",
+        title: "testdata4",
+        content: "testdata4  content",
+        date: "01/01/2024"
+    },
 
 ];
 
@@ -118,10 +125,27 @@ for (let i = 0; i < messages.length; i++) {
     let date = document.createElement("p");
     date.className = "info";
     date.innerHTML = element.date;
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "checkbox";
+    checkbox.id = "checkbox" + i; //in final this will be task id
+
+    checkbox.onclick = function(){checkedOff(checkbox)};
+    mssg.appendChild(checkbox);
     mssg.appendChild(header);
     mssg.appendChild(content);
     mssg.appendChild(date);
     document.getElementById("all-mssgs").appendChild(mssg);
+}
+
+
+function checkedOff(checkbox){
+    if(checkbox.checked){
+        checkbox.parentElement.style.backgroundColor = "#A0AB90";
+    } else {
+        checkbox.parentElement.style.backgroundColor = "#8F99AB";
+    }
+
 }
 
     
