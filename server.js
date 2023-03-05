@@ -61,33 +61,24 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 
 
 app.post('/api/login', (req, res) => {
-    console.log("Login ");
-    console.log(req.body)
+    console.log("inisde login function ");
+    // console.log(req.body)
 
-    const { error, value: { user, password } = {} } = loginSchema.validate(req.body);
-    if (error) {
-        return res.status(400).send(error.details[0].message);
+    if(dataBase[req.body.user] == undefined){
+      console.log("could not find user");
+      res.status(400);
     }
 
-    if (dataBase[user]!==undefined) {
-
-        const saltRounds = 10;
-        const salt = bcrypt.genSaltSync(saltRounds);
-        
-        // Hash the password with the salt
-        const hashedPassword = bcrypt.hashSync(password, salt)
-
-        
-        // add to the database
-        if( hashedPassword === dataBase[user].password){
-            return res.send(true)
-        }else{
-            return res.send(false)
-        }
+    if((dataBase[req.body.user]).password == req.body.password){
+      console.log("match found");
+      res.status(200);
+      
+    }else{
+      console.log("not a match");
+      res.status(400);
     }
-    else {
-        return res.status(409).send(false);
-    }
+
+    res.send();
 
 });
 
@@ -157,38 +148,12 @@ app.post('/api/addEvent', (req, res) => {
 
 
 
-app.post('/api/addUser', (req, res) => {
-
-    console.log("Add user")
-    console.log(req.body)
-
-    //const { error, value: { user, password } = {} } = createUserSchema.validate(req.body);
-
-    // if (error) {
-    //     return  res.status(400).send(error.details[0].message);
-    // }
-
-    // if (dataBase[user]!==undefined) {
-    //     return res.status(409).send("Username taken");
-    // }
-
-    // User is available, add to the database
-    // dataBase[user] = {
-    //     messages: [],
-    //     events: [],
-    //     password: password,
-    // };
-
-    // fs.writeFileSync(dataPath, JSON.stringify(dataBase));
-
-    return res.send(true);
-});
 
 app.post('/api/getData', (req, res) => {
     console.log("Get Data")
     console.log(req.body)
 
-    const { error, value: { user } = {} } = getD.validate(req.body);
+    const { error, value: { user } = {} } = getDataSchema.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -202,10 +167,35 @@ app.post('/api/getData', (req, res) => {
 
 });
 
+//post request to check if the user has already been added before
+app.post('/api/addUser', (req, res) => {
+
+  //if the user already existsin the database
+  if(dataBase[req.body.user]){
+    console.log("user already exists");
+    return res.status(409).send('User not found');
+  }else{
+
+    //if user does not exists add them to the database
+    console.log("add user ");
+    dataBase[req.body.user] = {
+          messages: [],
+          events: [],
+          password: req.body.password,
+      };
+  
+      fs.writeFileSync(dataPath, JSON.stringify(dataBase));
+      res.status(200).send();
+  }
+  
+});
+
 app.get('*', function(req, res) {
 
+  //console.log('INSIDE HERE');
+
     let requestedPath = req.path; // Get the requested path from the request object
-    console.log(requestedPath);
+    //console.log(requestedPath);
 
     if(requestedPath==="/"){
         requestedPath = "/sign-in.html"
@@ -213,10 +203,10 @@ app.get('*', function(req, res) {
 
     const htmlFilePath = __dirname + '/pages' + requestedPath; // Construct the file path to the HTML file
 
-    console.log(htmlFilePath);
+   // console.log(htmlFilePath);
 
     res.sendFile(htmlFilePath); // Send the HTML file
-  });
+});
   
 
 app.listen(port, () => {
